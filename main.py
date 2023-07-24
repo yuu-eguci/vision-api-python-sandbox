@@ -90,6 +90,21 @@ def process_result(result: AnnotateImageResponse) -> None:
     """
 
     page = result.full_text_annotation.pages[0]
+
+    # full_text_annotation の構造はなんかこんな感じ↓
+    # pages: list[Page]
+    #   blocks: list[Block]
+    #     bounding_box: BoundingPoly
+    #     paragraphs: list[Paragraph]
+    #       bounding_box: BoundingPoly
+    #       words: list[Word]
+    #         bounding_box: BoundingPoly
+    #         symbols: list[Symbol]
+    #           bounding_box: BoundingPoly
+    #           text: str
+    # text: str
+    # https://cloud.google.com/vision/docs/reference/rest/v1/AnnotateImageResponse#textannotation
+
     for block_index, block in enumerate(page.blocks):
         print(f">>>> block {block_index}")
         for paragraph_index, paragraph in enumerate(block.paragraphs):
