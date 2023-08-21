@@ -44,6 +44,16 @@ $ pipenv run python main.py
          July 21 , 2023 (694, 177) (761, 177) (761, 187) (694, 187)
 ```
 
+## API コールの履歴を見たい
+
+ここにアクセスしようや。
+
+https://console.cloud.google.com/apis/dashboard
+
+API ごとに見たいときはこっちね。こっちっていうか上のとこ↑から潜れる。
+
+https://console.cloud.google.com/apis/api/vision.googleapis.com/metrics
+
 ## 下準備が必要
 
 Cloud Vision API を使うには、 Google Cloud Console で "プロジェクト" をいっこ作る必要がある。
