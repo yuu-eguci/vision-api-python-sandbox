@@ -53,7 +53,7 @@ Cloud Vision API を使うには、 Google Cloud Console で "プロジェクト
 1. https://console.cloud.google.com/welcome
 2. 新しいプロジェクト
 3. API とサービス > ライブラリ > Cloud Vision API を有効にする
-4. 認証情報 > サービスアカウントを管理 > サービスアカウントを作成
+4. API とサービス > 認証情報 > サービスアカウントを管理 > サービスアカウントを作成
     - Python から Vision API を使うだけなら、サービスアカウントは、 Vision API に対する最小限のアクセス権限だけを持てばよい
 5. サービスアカウントをクリック > キータブ > 鍵を追加 > JSON が手に入る
 6. .env 登録
