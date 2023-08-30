@@ -1,4 +1,5 @@
 import os
+import json
 import inquirer  # type: ignore
 from google.cloud import vision  # type: ignore
 # https://cloud.google.com/vision/docs/reference/rest/v1/AnnotateImageResponse
@@ -88,6 +89,10 @@ def process_result(result: AnnotateImageResponse) -> None:
     Returns:
         None
     """
+
+    with open('annotate_image_response.json', 'w') as f:
+        json.dump(json.loads(AnnotateImageResponse.to_json(result)), f, indent=2, ensure_ascii=False)
+    print('annotate_image_response.json へ、もともとの json を書き出したよ。')
 
     page = result.full_text_annotation.pages[0]
 
