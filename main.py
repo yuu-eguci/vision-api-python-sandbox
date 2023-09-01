@@ -12,11 +12,6 @@ from google.cloud.vision_v1.types.image_annotator import AnnotateImageResponse
 from google.cloud.vision_v1.types import Feature
 
 
-class TextDetectionFeature(Enum):
-    TEXT_DETECTION = "text_detection"
-    DOCUMENT_TEXT_DETECTION = "document_text_detection"
-
-
 def main() -> None:
     file_list = os.listdir("./images/")
     image_file, detection_feature = choose_file_and_feature(file_list)
