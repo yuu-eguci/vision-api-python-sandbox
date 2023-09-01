@@ -2,7 +2,6 @@
 pipenv run python main.py
 """
 
-from enum import Enum
 import os
 import json
 import inquirer  # type: ignore
