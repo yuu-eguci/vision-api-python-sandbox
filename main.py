@@ -109,6 +109,15 @@ def process_result(result: AnnotateImageResponse) -> None:
         json.dump(json.loads(AnnotateImageResponse.to_json(result)), f, indent=2, ensure_ascii=False)
     print('annotate_image_response.json へ、もともとの json を書き出したよ。')
 
+    # <class 'google.cloud.vision_v1.types.image_annotator.AnnotateImageResponse'>
+    print(type(result))
+    # <class 'google.cloud.vision_v1.types.text_annotation.TextAnnotation'>
+    print(type(result.full_text_annotation))
+    # <class 'proto.marshal.collections.repeated.RepeatedComposite'>
+    print(type(result.full_text_annotation.pages))
+    # <class 'google.cloud.vision_v1.types.text_annotation.Page'>
+    print(type(result.full_text_annotation.pages[0]))
+
     page = result.full_text_annotation.pages[0]
 
     # full_text_annotation の構造はなんかこんな感じ↓
