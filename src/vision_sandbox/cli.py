@@ -62,6 +62,14 @@ class CliError(Exception):
     """利用者に伝えて終了コード 1 で終わるべき失敗。"""
 
 
+def interactive_prompt(questions: list[Any]) -> dict[str, str] | None:
+    """端末のときだけ inquirer で質問する。端末でなければ引数での指定を促す。"""
+    if not sys.stdin.isatty():
+        raise CliError("端末ではないので選べないよ。画像と --feature を引数で指定してね。")
+    answers: dict[str, str] | None = inquirer.prompt(questions)
+    return answers
+
+
 def _choose(args: argparse.Namespace, prompt: Prompt) -> tuple[Path, int]:
     """引数で足りない画像とフィーチャーを対話で選んでもらう。"""
     image: Path | None = args.image
@@ -116,7 +124,7 @@ def main(
     argv: Sequence[str] | None = None,
     *,
     client_factory: Callable[[], AnnotateClient] = vision.ImageAnnotatorClient,
-    prompt: Prompt = inquirer.prompt,
+    prompt: Prompt = interactive_prompt,
 ) -> int:
     args = build_parser().parse_args(argv)
     try:
@@ -126,11 +134,12 @@ def main(
         return 1
 
     paragraphs = extract_paragraphs(response)
-    if not paragraphs:
+    if paragraphs:
+        print(format_paragraphs(paragraphs))
+    else:
         print("画像からテキストが見つからなかったみたいだね…")
-        return 0
 
-    print(format_paragraphs(paragraphs))
+    # テキストがなくても書き出し、前回の結果が残らないようにする
     try:
         write_response_json(response, args.output)
     except OSError as e:

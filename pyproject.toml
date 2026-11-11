@@ -66,6 +66,7 @@ addopts = [
     "--strict-markers",
     "--strict-config",
     "--cov=vision_sandbox",
+    "--cov-branch",
     "--cov-report=term-missing",
-    "--cov-fail-under=95",
+    "--cov-fail-under=100",
 ]

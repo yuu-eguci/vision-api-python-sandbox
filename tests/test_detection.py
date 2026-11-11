@@ -125,3 +125,12 @@ def test_write_response_json_creates_parent_and_keeps_unicode(tmp_path: Path) ->
     raw = path.read_text(encoding="utf-8")
     assert "合成テキスト" in raw
     assert json.loads(raw)["fullTextAnnotation"]["text"] == "合成テキスト"
+
+
+def test_detect_text_raises_when_response_has_error_code_only(tmp_path: Path) -> None:
+    image = tmp_path / "synthetic.png"
+    image.write_bytes(b"synthetic")
+    failed = vision.AnnotateImageResponse(error={"code": 13})
+
+    with pytest.raises(VisionApiError, match=r"\(code=13\)"):
+        detect_text(image, FEATURES["TEXT_DETECTION"], FakeClient(failed), timeout=1)

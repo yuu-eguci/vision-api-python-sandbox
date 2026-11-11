@@ -70,7 +70,7 @@ def detect_text(
         features=[vision.Feature(type_=feature)],
     )
     response = client.annotate_image(request, timeout=timeout)
-    if response.error.message:
+    if response.error.code or response.error.message:
         raise VisionApiError(f"{response.error.message} (code={response.error.code})")
     return response
 
