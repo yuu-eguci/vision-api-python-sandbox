@@ -5,7 +5,8 @@
 *.json
 
 # OCR 結果は個人情報を含みうる
-output/
+output/*
+!output/.gitkeep
 
 .venv/
 __pycache__/

@@ -1,0 +1,8 @@
+# 許可リスト方式。images/ (個人情報を含む画像)・.env・鍵 JSON・output/ は入れない
+*
+!pyproject.toml
+!uv.lock
+!README.md
+!src/
+!tests/
+**/__pycache__
