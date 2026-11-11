@@ -1,0 +1,68 @@
+[project]
+name = "vision-api-python-sandbox"
+version = "0.1.0"
+description = "Google Cloud Vision API のテキスト検出を試すサンドボックス"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "google-cloud-vision>=3.16,<4",
+    "inquirer>=3.4,<4",
+]
+
+[project.scripts]
+vision-sandbox = "vision_sandbox.cli:run"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4",
+    "pytest>=9.2",
+    "pytest-cov>=7.1",
+    "ruff>=0.17",
+]
+
+[build-system]
+requires = ["hatchling>=1.33"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vision_sandbox"]
+
+[tool.hatch.build.targets.sdist]
+# images/ には個人情報を含む画像があるため配布物に入れない
+only-include = ["src", "tests", "README.md", "pyproject.toml"]
+
+[tool.uv]
+required-version = ">=0.13"
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "B", "UP", "SIM", "RUF", "S", "PT", "C4", "RET", "PTH", "PL",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "PLR2004"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+files = ["src", "tests"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = ["inquirer", "inquirer.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=vision_sandbox",
+    "--cov-report=term-missing",
+    "--cov-fail-under=95",
+]
