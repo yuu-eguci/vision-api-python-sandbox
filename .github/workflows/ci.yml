@@ -46,3 +46,7 @@ jobs:
           persist-credentials: false
       - run: docker compose run --rm --build test
       - run: docker compose run --rm --build -T app --help
+      - name: output/ にホストのユーザーで書き込めることを確認
+        run: |
+          export HOST_UID=$(id -u) HOST_GID=$(id -g)
+          docker compose run --rm -T --entrypoint sh app -c 'touch output/probe && rm output/probe'
