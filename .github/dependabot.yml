@@ -21,6 +21,10 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # Python のマイナー更新は .python-version などと合わせて手動で行う
+      - dependency-name: python
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
     groups:
       docker:
         patterns: ["*"]

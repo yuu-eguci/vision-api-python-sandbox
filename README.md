@@ -17,7 +17,7 @@ Python 3.14 + Google Cloud Vision API のテキスト検出 (OCR) を試すサ�
 | テスト | pytest + pytest-cov (Vision SDK はモック) |
 | Docker | `python:3.14-slim` ベース、非 root 実行 (`Dockerfile` / `compose.yaml`) |
 | CI | GitHub Actions (`.github/workflows/ci.yml`) |
-| 依存更新 | Dependabot (uv・GitHub Actions・Docker を週 1 回) |
+| 依存更新 | Dependabot (uv・GitHub Actions・Docker を週 1 回。Python のマイナー更新は手動) |
 
 ## クイックスタート
 
@@ -96,6 +96,15 @@ output/annotate_image_response.json へ、もともとの JSON を書き出し�
 レスポンス全体の JSON は、テキストが見つからなかったときも書き出します (前回の結果と取り違えないため)。
 端末以外 (`docker compose run -T` やスクリプト) から実行するときは対話できないので、画像と `--feature` を引数で指定してください。
 終了コードは、成功 (テキストなしを含む) が `0`、画像の読み込み・認証・API・JSON 書き出しのエラー、キャンセル、非対話環境での指定不足が `1`、引数の誤りが `2` です。
+
+### Python のバージョンを上げるとき
+
+Docker の Python のマイナー更新は Dependabot の対象外です。上げるときは次をまとめて変更してください。
+
+- `.python-version`
+- `pyproject.toml` の `requires-python`、`[tool.ruff]` の `target-version`、`[tool.mypy]` の `python_version`
+- `Dockerfile` の `python` イメージ (タグとダイジェスト)
+- `.github/workflows/ci.yml` のマトリクスと README
 
 ## 画像と個人情報
 
