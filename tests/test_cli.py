@@ -1,3 +1,4 @@
+import io
 import runpy
 from pathlib import Path
 from typing import Any
@@ -163,7 +164,8 @@ def test_main_reports_when_no_text_is_found(
 
     assert code == 0
     assert "テキストが見つからなかった" in capsys.readouterr().out
-    assert not output.exists()
+    # 前回の結果が残らないよう、テキストがなくても書き出す
+    assert output.is_file()
 
 
 @pytest.mark.parametrize(
@@ -249,3 +251,35 @@ def test_module_entry_point_shows_help(
 
     assert exc_info.value.code == 0
     assert "usage: vision-sandbox" in capsys.readouterr().out
+
+
+def test_main_refuses_to_prompt_without_tty(
+    image: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr("sys.stdin", io.StringIO())
+    client = FakeClient(hello_response())
+
+    code = cli.main([str(image)], client_factory=lambda: client)
+
+    assert code == 1
+    assert client.calls == []
+    assert "--feature" in capsys.readouterr().err
+
+
+class FakeTty(io.StringIO):
+    def isatty(self) -> bool:
+        return True
+
+
+def test_interactive_prompt_uses_inquirer_on_tty(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("sys.stdin", FakeTty())
+    received: list[Any] = []
+
+    def fake_inquirer_prompt(questions: list[Any]) -> dict[str, str]:
+        received.extend(questions)
+        return {"feature": "TEXT_DETECTION"}
+
+    monkeypatch.setattr("inquirer.prompt", fake_inquirer_prompt)
+
+    assert cli.interactive_prompt(["question"]) == {"feature": "TEXT_DETECTION"}
+    assert received == ["question"]
