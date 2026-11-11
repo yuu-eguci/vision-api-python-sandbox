@@ -1,7 +1,7 @@
 Vision API Python Sandbox
 ===
 
-😎 Python 3.14 + Google Cloud Vision API のテキスト検出 (OCR) を試すサンドボックス
+Python 3.14 + Google Cloud Vision API のテキスト検出 (OCR) を試すサンドボックスです。
 
 画像を選ぶと、Vision API の `TEXT_DETECTION` か `DOCUMENT_TEXT_DETECTION` でテキストを検出し、段落ごとのテキストと位置 (バウンディングボックス) を表示します。
 段落のテキストは API が返す区切り情報 (空白・改行) で組み立てるので、日本語のように空白のない文章も単語ごとに分断されません。
@@ -34,7 +34,7 @@ docker compose run --rm --build app --help
 ```
 
 Vision API を実際に呼ぶには、下の「下準備」で用意したサービスアカウント鍵をリポジトリ直下に置き、`.env` にパスを書きます。
-**API 呼び出しは課金対象です。**
+API 呼び出しは課金対象です。
 
 ```bash
 # .env
@@ -100,38 +100,36 @@ output/annotate_image_response.json へ、もともとの JSON を書き出し�
 
 OCR の結果は個人情報を含みうるため、`output/` は Git の管理対象外にしています。
 
-## API コールの履歴を見たい
+## API の利用状況
 
-ここにアクセスしようや。
+API 全体の利用状況を確認できます。
 
 https://console.cloud.google.com/apis/dashboard
 
-API ごとに見たいときはこっちね。こっちっていうか上のとこ↑から潜れる。
+Vision API の利用状況は次のページで確認できます。
 
 https://console.cloud.google.com/apis/api/vision.googleapis.com/metrics
 
-## 下準備が必要
+## 下準備
 
-Cloud Vision API を使うには、 Google Cloud Console で "プロジェクト" をいっこ作る必要がある。
-アカウントと請求先の用意は [Cloud Vision API を利用する準備](./Cloud%20Vision%20API%20を利用する準備.md) も参照。
-
-**(MEMO for me) すでに自分用のプロジェクトは作ってあって、 Vision API は念のため無効化してある状態。**
+Cloud Vision API を使うには、Google Cloud のプロジェクトが必要です。
+アカウントと請求先の用意は [Cloud Vision API を利用する準備](./Cloud%20Vision%20API%20を利用する準備.md) も参照してください。
 
 1. https://console.cloud.google.com/welcome
 2. 新しいプロジェクト
 3. API とサービス > ライブラリ > Cloud Vision API を有効にする
 4. API とサービス > 認証情報 > サービスアカウントを管理 > サービスアカウントを作成
-    - Python から Vision API を使うだけなら、サービスアカウントは、 Vision API に対する最小限のアクセス権限だけを持てばよい
-5. サービスアカウントをクリック > キータブ > 鍵を追加 > JSON が手に入る
-6. .env 登録
+    - サービスアカウントには Vision API の利用に必要な最小限の権限を設定します。
+5. サービスアカウントを選択 > キー タブ > 鍵を追加 (JSON の鍵がダウンロードされる)
+6. `.env` に登録
     - `GOOGLE_APPLICATION_CREDENTIALS=./vision-api-python-sandbox-....json`
-    - 鍵の JSON は `.gitignore` の `*.json` でコミット対象外になっている
+    - 鍵の JSON は `.gitignore` の `*.json` でコミット対象外になります。
 
-これで使えるかと思いきや、プロジェクトに対して請求アカウントをセットしておかないといけない。
+プロジェクトに請求先アカウントを関連付けます。
 
-1. Google Cloud のトップページみたいなとこから > 請求 > アカウントを作成
-2. なんやかんやプロジェクトにそれを設定
+1. Google Cloud Console の「お支払い」> アカウントを作成
+2. 請求先アカウントをプロジェクトに関連付けます。
 
-## 遊び終わったら
+## 使い終わったら
 
-Vision API を無効化しておこう。請求を回避するため。
+利用を終えたら、不要な呼び出しによる課金を避けるため Vision API を無効化してください。
