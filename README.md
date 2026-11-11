@@ -17,6 +17,7 @@ Vision API Python Sandbox
 | テスト | pytest + pytest-cov (Vision SDK はモック) |
 | Docker | `python:3.14-slim` ベース、非 root 実行 (`Dockerfile` / `compose.yaml`) |
 | CI | GitHub Actions (`.github/workflows/ci.yml`) |
+| 依存更新 | Dependabot (uv・GitHub Actions・Docker を週 1 回) |
 
 ## クイックスタート
 
