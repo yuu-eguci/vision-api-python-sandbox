@@ -51,6 +51,11 @@ docker compose run --rm app
 
 `app` はリポジトリを `/work` に読み取り専用でマウントし、`output/` だけ書き込めるようにしています。
 画像・`.env`・鍵 JSON はイメージには入りません (`.dockerignore` は許可リスト方式)。
+コンテナは既定で uid/gid 1000 で動きます。Linux で uid が異なる場合は、`output/` に書き込めるよう `HOST_UID` と `HOST_GID` を渡してください。
+
+```bash
+HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose run --rm app samples/synthetic-text.png --feature TEXT_DETECTION
+```
 
 ### ローカル (uv)
 
