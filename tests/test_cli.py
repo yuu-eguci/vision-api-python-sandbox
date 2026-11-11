@@ -1,3 +1,4 @@
+import runpy
 from pathlib import Path
 from typing import Any
 
@@ -51,8 +52,15 @@ def test_main_with_arguments_prints_paragraphs_and_writes_json(
     client = FakeClient(hello_response())
 
     code = run_main(
-        [str(image), "--feature", "DOCUMENT_TEXT_DETECTION", "--output", str(output),
-         "--timeout", "5"],
+        [
+            str(image),
+            "--feature",
+            "DOCUMENT_TEXT_DETECTION",
+            "--output",
+            str(output),
+            "--timeout",
+            "5",
+        ],
         client,
     )
 
@@ -165,8 +173,14 @@ def test_main_reports_when_no_text_is_found(
             FakeClient(vision.AnnotateImageResponse(error={"code": 3, "message": "Bad image."})),
             "Bad image.",
         ),
-        (FakeClient(api_exceptions.DeadlineExceeded("timed out")), "timed out"),
-        (auth_exceptions.DefaultCredentialsError("no adc"), "GOOGLE_APPLICATION_CREDENTIALS"),
+        (
+            FakeClient(api_exceptions.DeadlineExceeded("timed out")),  # type: ignore[no-untyped-call]
+            "timed out",
+        ),
+        (
+            auth_exceptions.DefaultCredentialsError("no adc"),  # type: ignore[no-untyped-call]
+            "GOOGLE_APPLICATION_CREDENTIALS",
+        ),
     ],
     ids=["response-error", "api-exception", "credentials"],
 )
@@ -208,3 +222,15 @@ def test_run_exits_with_main_return_code(monkeypatch: pytest.MonkeyPatch) -> Non
         cli.run()
 
     assert exc_info.value.code == 7
+
+
+def test_module_entry_point_shows_help(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr("sys.argv", ["vision-sandbox", "--help"])
+
+    with pytest.raises(SystemExit) as exc_info:
+        runpy.run_module("vision_sandbox", run_name="__main__")
+
+    assert exc_info.value.code == 0
+    assert "usage: vision-sandbox" in capsys.readouterr().out

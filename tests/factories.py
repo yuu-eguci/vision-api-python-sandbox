@@ -5,11 +5,13 @@ from google.cloud import vision
 BreakType = vision.TextAnnotation.DetectedBreak.BreakType
 
 
-def symbol(text: str, brk: BreakType | None = None) -> vision.Symbol:
+def symbol(text: str, brk: int | None = None) -> vision.Symbol:
     if brk is None:
         return vision.Symbol(text=text)
     detected = vision.TextAnnotation.DetectedBreak(type_=brk)
-    return vision.Symbol(text=text, property=vision.TextAnnotation.TextProperty(detected_break=detected))
+    return vision.Symbol(
+        text=text, property=vision.TextAnnotation.TextProperty(detected_break=detected)
+    )
 
 
 def word(*symbols: vision.Symbol) -> vision.Word:

@@ -46,9 +46,7 @@ def test_detect_text_sends_image_bytes_feature_and_timeout(tmp_path: Path) -> No
     image.write_bytes(b"synthetic-image-bytes")
     client = FakeClient(hello_response())
 
-    result = detect_text(
-        image, vision.Feature.Type.DOCUMENT_TEXT_DETECTION, client, timeout=12.5
-    )
+    result = detect_text(image, FEATURES["DOCUMENT_TEXT_DETECTION"], client, timeout=12.5)
 
     assert result == hello_response()
     [(request, timeout)] = client.calls
@@ -63,7 +61,7 @@ def test_detect_text_raises_when_response_has_error(tmp_path: Path) -> None:
     failed = vision.AnnotateImageResponse(error={"code": 3, "message": "Bad image data."})
 
     with pytest.raises(VisionApiError, match=r"Bad image data\. \(code=3\)"):
-        detect_text(image, vision.Feature.Type.TEXT_DETECTION, FakeClient(failed), timeout=1)
+        detect_text(image, FEATURES["TEXT_DETECTION"], FakeClient(failed), timeout=1)
 
 
 def test_extract_paragraphs_joins_symbols_with_detected_breaks() -> None:

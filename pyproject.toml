@@ -43,6 +43,9 @@ select = [
     "E", "W", "F", "I", "B", "UP", "SIM", "RUF", "S", "PT", "C4", "RET", "PTH", "PL",
 ]
 
+# 日本語の全角記号を誤検知しないようにする
+allowed-confusables = ["？", "！", "（", "）", "："]
+
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "PLR2004"]
 
