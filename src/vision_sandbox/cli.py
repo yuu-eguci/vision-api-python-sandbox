@@ -1,6 +1,7 @@
 """画像とフィーチャーを選び、Vision API のテキスト検出結果を表示する CLI。"""
 
 import argparse
+import math
 import sys
 from collections.abc import Callable, Sequence
 from pathlib import Path
@@ -29,8 +30,8 @@ def _positive_float(value: str) -> float:
     try:
         number = float(value)
     except ValueError:
-        number = 0.0
-    if number <= 0:
+        number = math.nan
+    if not (math.isfinite(number) and number > 0):
         raise argparse.ArgumentTypeError(f"正の数を指定してください: {value}")
     return number
 
@@ -129,8 +130,12 @@ def main(
         print("画像からテキストが見つからなかったみたいだね…")
         return 0
 
-    write_response_json(response, args.output)
     print(format_paragraphs(paragraphs))
+    try:
+        write_response_json(response, args.output)
+    except OSError as e:
+        print(f"JSON を書き出せなかったよ: {e}", file=sys.stderr)
+        return 1
     print(f"{args.output} へ、もともとの JSON を書き出したよ。")
     return 0
 

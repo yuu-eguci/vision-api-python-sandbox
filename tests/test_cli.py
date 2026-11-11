@@ -200,7 +200,22 @@ def test_main_reports_api_and_auth_errors(
     assert not output.exists()
 
 
-@pytest.mark.parametrize("value", ["0", "-1", "abc"])
+def test_main_reports_unwritable_output(
+    image: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    # 出力先がディレクトリだと書き込めない
+    code = run_main(
+        [str(image), "--feature", "TEXT_DETECTION", "--output", str(tmp_path)],
+        FakeClient(hello_response()),
+    )
+
+    assert code == 1
+    captured = capsys.readouterr()
+    assert "Hello, Vision API!" in captured.out
+    assert "JSON を書き出せなかった" in captured.err
+
+
+@pytest.mark.parametrize("value", ["0", "-1", "abc", "nan", "inf"])
 def test_main_rejects_invalid_timeout(image: Path, value: str) -> None:
     with pytest.raises(SystemExit) as exc_info:
         run_main([str(image), "--timeout", value], FakeClient(hello_response()))
