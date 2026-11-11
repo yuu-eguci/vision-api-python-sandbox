@@ -1,5 +1,15 @@
-
 .DS_Store
 .env
 .vscode/settings.json
+# サービスアカウント鍵などの JSON をコミットしない
 *.json
+
+# OCR 結果は個人情報を含みうる
+output/
+
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
