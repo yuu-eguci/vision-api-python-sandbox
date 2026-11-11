@@ -15,22 +15,24 @@ Vision API Python Sandbox
 | 主な依存 | google-cloud-vision 3.x, inquirer 3.x |
 | Lint / 型 | ruff (lint + format), mypy (strict) |
 | テスト | pytest + pytest-cov (Vision SDK はモック) |
+| Docker | `python:3.14-slim` ベース、非 root 実行 (`Dockerfile` / `compose.yaml`) |
 | CI | GitHub Actions (`.github/workflows/ci.yml`) |
 
 ## クイックスタート
 
-```bash
-# 依存をインストール
-uv sync
+### Docker (おすすめ)
 
-# テスト・lint・型チェック (Vision API は呼ばない)
-uv run pytest
-uv run ruff check .
-uv run ruff format --check .
-uv run mypy
+Docker と Docker Compose だけで動きます。
+
+```bash
+# lint・型チェック・テストをまとめて実行 (Vision API は呼ばない)
+docker compose run --rm --build test
+
+# 使い方を表示
+docker compose run --rm --build app --help
 ```
 
-Vision API を実際に呼ぶには、下の「下準備」で用意したサービスアカウント鍵を `.env` に設定します。
+Vision API を実際に呼ぶには、下の「下準備」で用意したサービスアカウント鍵をリポジトリ直下に置き、`.env` にパスを書きます。
 **API 呼び出しは課金対象です。**
 
 ```bash
@@ -40,10 +42,26 @@ GOOGLE_APPLICATION_CREDENTIALS=./vision-api-python-sandbox-xxxx.json
 
 ```bash
 # 画像とフィーチャーを指定して実行
-uv run --env-file .env vision-sandbox samples/synthetic-text.png --feature TEXT_DETECTION
+docker compose run --rm app samples/synthetic-text.png --feature TEXT_DETECTION
 
 # 引数を省くと images/ の画像とフィーチャーを対話で選ぶ
-uv run --env-file .env vision-sandbox
+docker compose run --rm app
+```
+
+`app` はリポジトリを `/work` に読み取り専用でマウントし、`output/` だけ書き込めるようにしています。
+画像・`.env`・鍵 JSON はイメージには入りません (`.dockerignore` は許可リスト方式)。
+
+### ローカル (uv)
+
+```bash
+uv sync
+
+uv run pytest
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy
+
+uv run --env-file .env vision-sandbox samples/synthetic-text.png --feature TEXT_DETECTION
 ```
 
 出力例 (合成画像 `samples/synthetic-text.png` の場合のイメージ):

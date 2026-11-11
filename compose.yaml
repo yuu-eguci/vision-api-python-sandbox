@@ -1,0 +1,24 @@
+name: vision-api-python-sandbox
+
+services:
+  app:
+    build:
+      context: .
+      target: runtime
+    image: vision-api-python-sandbox:runtime
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      # .env の相対パス (鍵 JSON など) をホストと同じように解決できるよう、リポジトリ全体を読み取り専用で渡す
+      - .:/work:ro
+      - ./output:/work/output
+    stdin_open: true
+    tty: true
+
+  test:
+    build:
+      context: .
+      target: dev
+    image: vision-api-python-sandbox:dev
+    profiles: [test]
